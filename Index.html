@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sabores de Asia — Carta Digital</title>
+  <style>
+    :root {
+      --bg: #0c0b10;
+      --accent: #5b3366;
+      --accent2: #2e1d34;
+      --text: #f0edf3;
+      --card: #191520;
+      --highlight: #b57edc;
+      --gold: #d4af37;
+      --button: #3d2b56;
+    }
+    body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); transition: background 0.6s, color 0.6s; }
+    body.dia { background: #f4f3f8; color: #1a1a1a; }
+    header { background: linear-gradient(90deg, #2e1d34, #3d2b56); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+    header img { width: 60px; height: 60px; border-radius: 50%; }
+    nav a { color: var(--text); margin: 0 10px; text-decoration: none; font-weight: 600; transition: color 0.3s; cursor:pointer; }
+    nav a:hover { color: var(--highlight); }
+    .lang-select, .modo-btn { background: var(--accent); border: none; color: white; border-radius: 8px; padding: 6px 10px; cursor: pointer; transition: background 0.3s; }
+    .lang-select:hover, .modo-btn:hover { background: var(--highlight); }
+    .container { max-width: 1200px; margin: auto; padding: 20px; }
+    .menu-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+    .region-header { text-align: center; margin-top: 2rem; color: var(--gold); font-size: 1.5em; position: relative; }
+    .region-header img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px; }
+    .card { background: var(--card); border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.5); transition: transform 0.3s; }
+    .card:hover { transform: scale(1.04); }
+    .card img { width: 100%; height: 180px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .precio { color: var(--gold); font-weight: 700; margin: 8px 0; }
+    .alergenos { font-size: 13px; color: #b8a5c9; margin-top: 4px; }
+    .btn-ing { margin-top: 8px; padding: 6px 12px; background: var(--button); border: none; border-radius: 8px; color: var(--text); cursor: pointer; transition: background 0.3s; }
+    .btn-ing:hover { background: var(--highlight); }
+    .filter-buttons { text-align: center; margin-bottom: 20px; }
+    .filter-buttons button { margin: 0 5px; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; background: var(--accent); color: #fff; transition: background 0.3s; }
+    .filter-buttons button:hover { background: var(--highlight); }
+    section { display:none; }
+    section.active { display:block; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="logo sushi">
+    <nav>
+      <a class="tab-btn" data-tab="menu">Menú</a>
+      <a class="tab-btn" data-tab="delivery">Delivery</a>
+      <a class="tab-btn" data-tab="reservas">Reservas</a>
+      <a class="tab-btn" data-tab="pagos">Pagos</a>
+      <a class="tab-btn" data-tab="contacto">Contacto</a>
+    </nav>
+    <div>
+      <select class="lang-select" id="langSelect">
+        <option value="es">🇪🇸 Español</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="jp">🇯🇵 日本語</option>
+        <option value="kr">🇰🇷 한국어</option>
+        <option value="cn">🇨🇳 中文</option>
+        <option value="th">🇹🇭 ไทย</option>
+      </select>
+      <button class="modo-btn" id="modoToggle">🌙</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="filter-buttons">
+      <button onclick="filtrarRegion('Todas')">Todas</button>
+      <button onclick="filtrarRegion('Japon')">Japón</button>
+      <button onclick="filtrarRegion('China')">China</button>
+      <button onclick="filtrarRegion('Corea')">Corea</button>
+      <button onclick="filtrarRegion('Tailandia')">Tailandia</button>
+      <button onclick="filtrarRegion('Vietnam')">Vietnam</button>
+    </div>
+
+    <section id="menu" class="active">
+      <h2 id="titulo" style="text-align:center;">🍜 Carta Digital — Sabores de Asia</h2>
+      <div class="menu-container" id="menuContainer"></div>
+    </section>
+
+    <section id="delivery"><h2>🚚 Delivery</h2><p>Opciones de envío y pedidos a domicilio.</p></section>
+    <section id="reservas"><h2>📅 Reservas</h2><p>Reserva tu mesa en línea.</p></section>
+    <section id="pagos"><h2>💳 Métodos de Pago</h2><p>Visa, MasterCard, PayPal y efectivo.</p></section>
+    <section id="contacto"><h2>📞 Contacto</h2><p>Email, teléfono y dirección.</p></section>
+  </div>
+
+  <script>
+    const textos = {
+      es: { titulo: '🍜 Carta Digital — Sabores de Asia', ingredientes: 'Ingredientes', alergenos: 'Alergenos', modificar: 'Modificar ingredientes' },
+      en: { titulo: '🍜 Digital Menu — Flavors of Asia', ingredientes: 'Ingredients', alergenos: 'Allergens', modificar: 'Modify ingredients' },
+      jp: { titulo: '🍜 デジタルメニュー — アジアの味', ingredientes: '材料', alergenos: 'アレルゲン', modificar: '材料を変更' },
+      kr: { titulo: '🍜 디지털 메뉴 — 아시아의 맛', ingredientes: '재료', alergenos: '알레르기 유발 물질', modificar: '재료 수정' },
+      cn: { titulo: '🍜 数字菜单 — 亚洲风味', ingredientes: '配料', alergenos: '过敏原', modificar: '修改成分' },
+      th: { titulo: '🍜 เมนูดิจิทัล — รสชาติของเอเชีย', ingredientes: 'ส่วนผสม', alergenos: 'สารก่อภูมิแพ้', modificar: 'แก้ไขส่วนผสม' }
+    };
+
+    let idiomaActual = 'es';
+    let regionFiltrada = 'Todas';
+
+    const regiones = {
+      Japon: [
+        { nombre:{es:'Sushi Nigiri',en:'Sushi Nigiri',jp:'寿司にぎり',kr:'스시 니기리',cn:'寿司握り',th:'ซูชินิกิริ'}, precio:8.5, alergenos:['Pescado','Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/6/60/Sushi_platter.jpg', ingredientes:{es:['Arroz','Pescado','Alga Nori'],en:['Rice','Fish','Nori'],jp:['ご飯','魚','海苔'],kr:['밥','생선','김'],cn:['米饭','鱼','海苔'],th:['ข้าว','ปลา','สาหร่าย']}},
+        { nombre:{es:'Ramen Tonkotsu',en:'Tonkotsu Ramen',jp:'豚骨ラーメン',kr:'돈코츠 라멘',cn:'豚骨拉面',th:'ราเม็งทงคตสึ'}, precio:10, alergenos:['Gluten','Huevo'], img:'https://upload.wikimedia.org/wikipedia/commons/0/0b/Tonkotsu_ramen.jpg', ingredientes:{es:['Fideos','Caldo de cerdo','Huevo','Cebolla'],en:['Noodles','Pork broth','Egg','Onion'],jp:['麺','豚骨スープ','卵','玉ねぎ'],kr:['면','돼지육수','계란','양파'],cn:['面条','猪骨汤','鸡蛋','洋葱'],th:['บะหมี่','น้ำซุปหมู','ไข่','หัวหอม']}},
+        { nombre:{es:'Tempura',en:'Tempura',jp:'天ぷら',kr:'튀김',cn:'天妇罗',th:'เทมปุระ'}, precio:9.5, alergenos:['Gluten','Mariscos'], img:'https://upload.wikimedia.org/wikipedia/commons/1/1b/Tendon_set.JPG', ingredientes:{es:['Camarones','Harina','Aceite'],en:['Shrimp','Flour','Oil'],jp:['エビ','小麦粉','油'],kr:['새우','밀가루','기름'],cn:['虾','面粉','油'],th:['กุ้ง','แป้ง','น้ำมัน']}},
+        { nombre:{es:'Okonomiyaki',en:'Okonomiyaki',jp:'お好み焼き',kr:'오코노미야키',cn:'御好烧',th:'โอโคโนมิยากิ'}, precio:8, alergenos:['Gluten','Soja','Huevos'], img:'https://upload.wikimedia.org/wikipedia/commons/6/6d/Okonomiyaki_001.jpg', ingredientes:{es:['Repollo','Harina','Huevo','Salsa Okonomiyaki'],en:['Cabbage','Flour','Egg','Okonomiyaki sauce'],jp:['キャベツ','小麦粉','卵','お好み焼きソース'],kr:['양배추','밀가루','계란','오코노미야키 소스'],cn:['卷心菜','面粉','鸡蛋','御好烧酱'],th:['กะหล่ำปลี','แป้ง','ไข่','ซอสโอโคโนมิยากิ']}}
+      ],
+      China: [
+        { nombre:{es:'Dim Sum',en:'Dim Sum',jp:'点心',kr:'딤섬',cn:'点心',th:'ติ่มซำ'}, precio:7.5, alergenos:['Gluten','Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/d/d4/Dim_Sum_platter.jpg', ingredientes:{es:['Masa','Cerdo','Salsa de soja'],en:['Dough','Pork','Soy sauce'],jp:['生地','豚肉','醤油'],kr:['반죽','돼지고기','간장'],cn:['面团','猪肉','酱油'],th:['แป้ง','หมู','ซอสถั่วเหลือง']}},
+        { nombre:{es:'Pato Pekín',en:'Peking Duck',jp:'北京ダック',kr:'베이징덕',cn:'北京烤鸭',th:'เป็ดปักกิ่ง'}, precio:14, alergenos:['Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/3/3c/Peking_Duck_-_cropped.jpg', ingredientes:{es:['Pato','Salsa Hoisin','Tortilla'],en:['Duck','Hoisin sauce','Wrap'],jp:['アヒル','ホイシンソース','ラップ'],kr:['오리','호이신소스','랩'],cn:['鸭','海鲜酱','薄饼'],th:['เป็ด','ซอสฮอยซิน','แป้งห่อ']}},
+        { nombre:{es:'Chow Mein',en:'Chow Mein',jp:'炒面',kr:'차오면',cn:'炒面',th:'ผัดหมี่'}, precio:9, alergenos:['Gluten'], img:'https://upload.wikimedia.org/wikipedia/commons/3/3e/Chow_mein_with_vegetables.jpg', ingredientes:{es:['Fideos','Verduras','Salsa de soja'],en:['Noodles','Vegetables','Soy sauce'],jp:['麺','野菜','醤油'],kr:['면','야채','간장'],cn:['面条','蔬菜','酱油'],th:['บะหมี่','ผัก','ซอสถั่วเหลือง']}},
+        { nombre:{es:'Mapo Tofu',en:'Mapo Tofu',jp:'麻婆豆腐',kr:'마파두부',cn:'麻婆豆腐',th:'หมาปู่เต้าหู้'}, precio:8, alergenos:['Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/2/2f/Mapo_doufu.JPG', ingredientes:{es:['Tofu','Carne de cerdo','Salsa picante'],en:['Tofu','Pork','Spicy sauce'],jp:['豆腐','豚肉','辛いソース'],kr:['두부','돼지고기','매운 소스'],cn:['豆腐','猪肉','辣酱'],th:['เต้าหู้','หมู','ซอสเผ็ด']}}
+      ],
+      Corea: [
+        { nombre:{es:'Bibimbap',en:'Bibimbap',jp:'ビビンバ',kr:'비빔밥',cn:'拌饭',th:'บิบิมบับ'}, precio:9, alergenos:['Huevo','Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/3/34/Bibimbap.jpg', ingredientes:{es:['Arroz','Verduras','Huevo','Salsa Gochujang'],en:['Rice','Vegetables','Egg','Gochujang sauce'],jp:['ご飯','野菜','卵','コチュジャン'],kr:['밥','야채','계란','고추장 소스'],cn:['米饭','蔬菜','鸡蛋','辣椒酱'],th:['ข้าว','ผัก','ไข่','ซอสโคชูจัง']}},
+        { nombre:{es:'Kimchi',en:'Kimchi',jp:'キムチ',kr:'김치',cn:'泡菜',th:'กิมจิ'}, precio:5, alergenos:['Soja'], img:'https://upload.wikimedia.org/wikipedia/commons/6/6f/Kimchi-IMG_3185.jpg', ingredientes:{es:['Col fermentada','Ajo','Chile'],en:['Fermented cabbage','Garlic','Chili'],jp:['発酵キャベツ','ニンニク','唐辛子'],kr:['발효 양배추','마늘','고추'],cn:['发酵卷心菜','大蒜','辣椒'],th:['กะหล่ำปลีหมัก','กระเทียม','พริก']}}  
+      ],
+      Tailandia: [
+        { nombre:{es:'Pad Thai',en:'Pad Thai',jp:'パッタイ',kr:'팟타이',cn:'泰式炒河粉',th:'ผัดไทย'}, precio:8.5, alergenos:['Gluten','Cacahuetes'], img:'https://upload.wikimedia.org/wikipedia/commons/6/66/Pad_Thai_kung_Chang_Khien_street_stall.jpg', ingredientes:{es:['Fideos de arroz','Camarones','Cacahuetes','Huevo'],en:['Rice noodles','Shrimp','Peanuts','Egg'],jp:['米粉','エビ','ピーナッツ','卵'],kr:['쌀국수','새우','땅콩','계란'],cn:['米粉','虾','花生','鸡蛋'],th:['ก๋วยเตี๋ยวข้าว','กุ้ง','ถั่วลิสง','ไข่']}},
+        { nombre:{es:'Tom Yum',en:'Tom Yum',jp:'トムヤム',kr:'톰얌',cn:'冬阴功汤',th:'ต้มยำ'}, precio:9, alergenos:['Mariscos'], img:'https://upload.wikimedia.org/wikipedia/commons/2/28/Tom_Yum_Soup.jpg', ingredientes:{es:['Camarón','Hierbas','Leche de coco','Chile'],en:['Shrimp','Herbs','Coconut milk','Chili'],jp:['エビ','
